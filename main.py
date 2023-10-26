@@ -1,5 +1,6 @@
 import time
-
+import tkinter as tk
+from tkinter import messagebox
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -19,12 +20,34 @@ driver.get(url)
 driver.implicitly_wait(10)
 
 
-def run_main():
+def schedule_main():
     schedule.every().sunday.at("11:00").do(main)
     while True:
         schedule.run_pending()
         time.sleep(1)
 
+
+def ask_permission():
+    root = tk.Tk
+    def grant_permission():
+        schedule_main()
+        root.destroy()
+    def deny_permission():
+        print("Permission denied")
+        root.destroy()
+
+    root.title("Permission")
+    label = tk.Label(root, text="Do you want to run the script on Sunday at 11 AM?")
+    label.pack()
+
+    # Create "Yes" and "No" buttons
+    yes_button = tk.Button(root, text="Yes", command=grant_permission)
+    no_button = tk.Button(root, text="No", command=deny_permission)
+
+    yes_button.pack()
+    no_button.pack()
+
+    root.mainloop()
 
 def main():
     saved_games = []
@@ -71,3 +94,7 @@ def main():
 
     print("Exiting Browser")
     driver.quit()
+
+
+if __name__ == "__main__":
+    ask_permission()
